@@ -1,0 +1,50 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst QD1.nios2_gen2_0.clock_bridge -pg 1
+preplace inst QD1.clk_50 -pg 1 -lvl 1 -y 1210
+preplace inst QD1.audio_i2c_config -pg 1 -lvl 3 -y 30
+preplace inst QD1.spi_master -pg 1 -lvl 3 -y 1650
+preplace inst QD1.response_out -pg 1 -lvl 3 -y 1450
+preplace inst QD1.nios2_gen2_0.reset_bridge -pg 1
+preplace inst QD1.sdram_0 -pg 1 -lvl 3 -y 1850
+preplace inst QD1.uart -pg 1 -lvl 3 -y 1070
+preplace inst QD1.stimulus_in -pg 1 -lvl 3 -y 950
+preplace inst QD1.nios2_gen2_0.cpu -pg 1
+preplace inst QD1.nios2_gen2_0 -pg 1 -lvl 2 -y 940
+preplace inst QD1.egm -pg 1 -lvl 3 -y 750
+preplace inst QD1.Audio -pg 1 -lvl 3 -y 130
+preplace inst QD1.lcd_display -pg 1 -lvl 3 -y 850
+preplace inst QD1.timer_0 -pg 1 -lvl 3 -y 650
+preplace inst QD1.seven_seg_pio -pg 1 -lvl 3 -y 1550
+preplace inst QD1.switch_pio -pg 1 -lvl 3 -y 1750
+preplace inst QD1 -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst QD1.altpll_0 -pg 1 -lvl 3 -y 1190
+preplace inst QD1.system_timer -pg 1 -lvl 3 -y 550
+preplace inst QD1.jtag_uart_0 -pg 1 -lvl 3 -y 370
+preplace inst QD1.button_pio -pg 1 -lvl 3 -y 250
+preplace inst QD1.sysid_qsys_0 -pg 1 -lvl 3 -y 470
+preplace inst QD1.led_pio -pg 1 -lvl 3 -y 1350
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)spi_master.external,(SLAVE)QD1.spi_master) 1 0 3 NJ 1680 NJ 1680 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)switch_pio.external_connection,(SLAVE)QD1.switch_pio) 1 0 3 NJ 1780 NJ 1780 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)seven_seg_pio.dual_7_segment,(SLAVE)QD1.segment_drive) 1 0 3 NJ 1600 NJ 1600 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)button_pio.external_connection,(SLAVE)QD1.button_pio) 1 0 3 NJ 280 NJ 280 NJ
+preplace netloc FAN_OUT<net_container>QD1</net_container>(SLAVE)uart.clk,(SLAVE)seven_seg_pio.clk,(SLAVE)Audio.clk,(SLAVE)timer_0.clk,(SLAVE)spi_master.clk,(SLAVE)led_pio.clk,(SLAVE)switch_pio.clk,(SLAVE)sysid_qsys_0.clk,(SLAVE)button_pio.clk,(MASTER)altpll_0.c2,(SLAVE)egm.clk,(SLAVE)response_out.clk,(SLAVE)audio_i2c_config.clk,(SLAVE)system_timer.clk,(SLAVE)nios2_gen2_0.clk,(SLAVE)sdram_0.clk,(SLAVE)lcd_display.clk,(SLAVE)stimulus_in.clk,(SLAVE)jtag_uart_0.clk) 1 1 3 320 1800 760 1340 1010
+preplace netloc EXPORT<net_container>QD1</net_container>(MASTER)altpll_0.c1,(MASTER)QD1.audio_mclk) 1 3 1 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)QD1.stimulus_in,(SLAVE)stimulus_in.external_connection) 1 0 3 NJ 1080 NJ 1080 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)QD1.response_out,(SLAVE)response_out.external_connection) 1 0 3 NJ 1480 NJ 1480 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)audio_i2c_config.external_interface,(SLAVE)QD1.audio_i2c) 1 0 3 NJ 80 NJ 80 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)QD1.reset,(SLAVE)clk_50.clk_in_reset) 1 0 1 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)QD1.clk_50,(SLAVE)clk_50.clk_in) 1 0 1 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)lcd_display.external,(SLAVE)QD1.lcd_display) 1 0 3 NJ 900 NJ 900 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)QD1.egm_interface,(SLAVE)egm.interface) 1 0 3 NJ 800 NJ 800 NJ
+preplace netloc POINT_TO_POINT<net_container>QD1</net_container>(SLAVE)altpll_0.inclk_interface,(MASTER)clk_50.clk) 1 1 2 N 1220 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)QD1.uart,(SLAVE)uart.external_connection) 1 0 3 NJ 1100 NJ 1100 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(MASTER)QD1.sdram_clk,(MASTER)altpll_0.c0) 1 3 1 NJ
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)QD1.led_pio,(SLAVE)led_pio.external_connection) 1 0 3 NJ 1380 NJ 1380 NJ
+preplace netloc INTERCONNECT<net_container>QD1</net_container>(SLAVE)lcd_display.control_slave,(SLAVE)Audio.avalon_audio_slave,(SLAVE)sysid_qsys_0.control_slave,(SLAVE)system_timer.s1,(SLAVE)uart.s1,(SLAVE)nios2_gen2_0.debug_mem_slave,(MASTER)nios2_gen2_0.data_master,(SLAVE)led_pio.s1,(SLAVE)jtag_uart_0.avalon_jtag_slave,(MASTER)nios2_gen2_0.instruction_master,(SLAVE)timer_0.s1,(SLAVE)seven_seg_pio.avalon_slave_0,(SLAVE)response_out.s1,(SLAVE)button_pio.s1,(SLAVE)stimulus_in.s1,(SLAVE)egm.avalon_egm_slave,(SLAVE)switch_pio.s1,(SLAVE)spi_master.s1,(SLAVE)sdram_0.s1,(SLAVE)audio_i2c_config.avalon_av_config_slave) 1 1 2 340 1840 700
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)QD1.audio_out,(SLAVE)Audio.external_interface) 1 0 3 NJ 180 NJ 180 NJ
+preplace netloc FAN_OUT<net_container>QD1</net_container>(SLAVE)stimulus_in.reset,(SLAVE)timer_0.reset,(SLAVE)system_timer.reset,(SLAVE)response_out.reset,(MASTER)clk_50.clk_reset,(SLAVE)button_pio.reset,(SLAVE)sdram_0.reset,(SLAVE)jtag_uart_0.reset,(SLAVE)lcd_display.reset,(SLAVE)spi_master.reset,(SLAVE)seven_seg_pio.reset,(SLAVE)uart.reset,(SLAVE)altpll_0.inclk_interface_reset,(SLAVE)audio_i2c_config.reset,(SLAVE)switch_pio.reset,(SLAVE)Audio.reset,(SLAVE)egm.reset,(SLAVE)sysid_qsys_0.reset,(SLAVE)nios2_gen2_0.reset,(SLAVE)led_pio.reset) 1 1 2 300 1820 780
+preplace netloc FAN_OUT<net_container>QD1</net_container>(SLAVE)uart.irq,(SLAVE)stimulus_in.irq,(SLAVE)button_pio.irq,(SLAVE)Audio.interrupt,(SLAVE)jtag_uart_0.irq,(SLAVE)system_timer.irq,(SLAVE)timer_0.irq,(MASTER)nios2_gen2_0.irq) 1 2 1 740
+preplace netloc EXPORT<net_container>QD1</net_container>(SLAVE)sdram_0.wire,(SLAVE)QD1.sdram_0) 1 0 3 NJ 1920 NJ 1920 NJ
+levelinfo -pg 1 0 90 1130
+levelinfo -hier QD1 100 130 460 820 1030

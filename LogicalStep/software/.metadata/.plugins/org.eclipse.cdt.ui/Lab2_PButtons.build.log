@@ -1,0 +1,9 @@
+16:10:28 **** Incremental Build of configuration Nios II for project Lab2_PButtons ****
+make all 
+Info: Building ../Lab2_PButtons_bsp/
+C:/Software/Altera/15.1/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../Lab2_PButtons_bsp/
+[BSP build complete]
+[Lab2_PButtons build complete]
+
+16:10:29 Build Finished (took 984ms)
+

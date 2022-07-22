@@ -1,0 +1,159 @@
+/*
+ * "Hello World" example.
+ *
+ * This example prints 'Hello from Nios II' to the STDOUT stream. It runs on
+ * the Nios II 'standard', 'full_featured', 'fast', and 'low_cost' example
+ * designs. It runs with or without the MicroC/OS-II RTOS and requires a STDOUT
+ * device in your system's hardware.
+ * The memory footprint of this hosted application is ~69 kbytes by default
+ * using the standard reference design.
+ *
+ * For a reduced footprint version of this template, and an explanation of how
+ * to reduce the memory footprint for a given application, see the
+ * "small_hello_world" template.
+ *
+ */
+
+#include <stdio.h>
+#include "system.h"
+#include "altera_avalon_pio_regs.h"
+#include "sys/alt_irq.h"
+
+int background();
+int k=0;
+static void interrupted_ISR(void* context, alt_u32 id);
+int main()
+{
+	int mode = IORD(SWITCH_PIO_BASE, 0);
+	if(mode==0){  //interrupt
+		int avg_latency,missed_pulses,multi_pulses,back_run;
+		printf("Interrupt method selected.\nPlease, press PB0 to continue.\n");
+		while(IORD(BUTTON_PIO_BASE, 0)==15){} //wait until PB0 is pressed
+		int i=2;
+		alt_irq_register(STIMULUS_IN_IRQ,(void*)0,interrupted_ISR);
+		IOWR(STIMULUS_IN_BASE,2,1); //mask the ISR
+		for(i;i<=5000;i+=2){
+			IOWR(EGM_BASE,0,0); // disable
+			back_run=0;
+			IOWR(EGM_BASE,2,i); // period
+			IOWR(EGM_BASE,3,i/2);	 // pulse width
+			IOWR(EGM_BASE,0,1); // enable
+			IOWR(LED_PIO_BASE,0,0x02);//test start
+			IOWR(LED_PIO_BASE,0,0x00);
+
+			while(IORD(EGM_BASE, 1)==1){
+				//IOWR(STIMULUS_IN_BASE,2,1); //mask the ISR
+				IOWR(LED_PIO_BASE,0,0x01);
+				background();
+				IOWR(LED_PIO_BASE,0,0x00);
+				back_run++;
+			}
+
+			avg_latency = IORD(EGM_BASE, 4); // average latency
+			missed_pulses = IORD(EGM_BASE, 5); // missed pulses
+			multi_pulses = IORD(EGM_BASE, 6); // multi pulses
+
+			printf("%d,%d,%d,%d,%d,%d\n",i,i/2,back_run,avg_latency,missed_pulses,multi_pulses);
+
+		}
+		IOWR(EGM_BASE,0,0); // disable
+		IOWR(STIMULUS_IN_BASE,2,0); //unmask
+
+		return 0;
+
+	}else if(mode==1){ //tight-polling
+		int avg_latency,missed_pulses,multi_pulses,back_run;
+		int max_back=0;
+		printf("tight-polling method selected.\nPlease, press PB0 to continue.\n");
+		int i=2;
+		int j=0;
+		while(IORD(BUTTON_PIO_BASE, 0)==15){} //wait until PB0 is pressed
+		printf("Period,Pulse_Witdh,BT_run,Latency,Missed,Multiple\n");
+		for(i;i<=5000;i+=2){
+			IOWR(EGM_BASE,0,0); // disable
+			back_run=0;
+			max_back=0;
+			IOWR(EGM_BASE,2,i); // period
+			IOWR(EGM_BASE,3,i/2);	 // pulse width
+			IOWR(EGM_BASE,0,1); // enable
+			IOWR(LED_PIO_BASE,0,0x02);//test start
+			IOWR(LED_PIO_BASE,0,0x00);
+
+			while(IORD(EGM_BASE, 1)==1){ //check if busy
+				if(max_back==0){
+					while((IORD(STIMULUS_IN_BASE, 0)==0) && (IORD(EGM_BASE, 1)==1));
+					if(IORD(STIMULUS_IN_BASE, 0)==1){
+						IOWR(RESPONSE_OUT_BASE,0,1);
+						IOWR(RESPONSE_OUT_BASE,0,0);
+					}
+
+					while(IORD(STIMULUS_IN_BASE, 0)==1); //wait stimulus in back to 0
+					while((IORD(STIMULUS_IN_BASE, 0)==0) && (IORD(EGM_BASE, 1)==1)){
+						IOWR(LED_PIO_BASE,0,0x01);
+						background();
+						IOWR(LED_PIO_BASE,0,0x00);
+						back_run++;
+						max_back++;
+					}
+					if(IORD(STIMULUS_IN_BASE, 0)==1){
+						IOWR(RESPONSE_OUT_BASE,0,1);
+						IOWR(RESPONSE_OUT_BASE,0,0);
+					}
+
+					while(IORD(STIMULUS_IN_BASE, 0)==1); //wait stimulus in back to 0
+					//continue;
+				}else{
+					for(j=0;j<(max_back-1);j++){
+						IOWR(LED_PIO_BASE,0,0x01);
+						background();
+						IOWR(LED_PIO_BASE,0,0x00);
+						back_run++;
+					}
+					while((IORD(STIMULUS_IN_BASE, 0)==0) && (IORD(EGM_BASE, 1)==1));
+					if(IORD(EGM_BASE, 1)==0){
+						break;
+					}
+					if(IORD(STIMULUS_IN_BASE, 0)==1){
+						IOWR(RESPONSE_OUT_BASE,0,1);
+						IOWR(RESPONSE_OUT_BASE,0,0);
+					}
+
+					while(IORD(STIMULUS_IN_BASE, 0)==1); //wait stimulus in back to 0
+				}
+			}
+			avg_latency = IORD(EGM_BASE, 4); // average latency
+			missed_pulses = IORD(EGM_BASE, 5); // missed pulses
+			multi_pulses = IORD(EGM_BASE, 6); // multi pulses
+
+			printf("%d,%d,%d,%d,%d,%d\n",i,i/2,back_run,avg_latency,missed_pulses,multi_pulses);
+		}
+		IOWR(EGM_BASE,0,0); // disable
+		return 0;
+
+		}
+	}
+
+
+static void interrupted_ISR(void* context, alt_u32 id){
+	//ISR code
+	IOWR(LED_PIO_BASE,0,0x04);
+	IOWR(RESPONSE_OUT_BASE,0,1);
+	IOWR(RESPONSE_OUT_BASE,0,0);
+	IOWR(LED_PIO_BASE,0,0x00);
+	//clear interrupt
+	IOWR(STIMULUS_IN_BASE,3,0);
+}
+
+int background()
+{
+	int j;
+	int x = 0;
+	int grainsize = 4;
+	int g_taskProcessed = 0;
+
+	for(j = 0; j < grainsize; j++)
+	{
+		g_taskProcessed++;
+	}
+	return x;
+}
